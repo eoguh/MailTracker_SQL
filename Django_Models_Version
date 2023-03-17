@@ -1,0 +1,68 @@
+
+
+from django.db import models
+
+
+class User (models.Model):
+    username        = models.CharField(max_length=10000)
+    first_name      = models.CharField(max_length=10000)
+    last_name       = models.CharField(max_length=10000)
+    email_address   = models.EmailField()
+    date_joined     = models.DateTimeField(auto_now_add=True)
+
+
+
+class Staff(models.Model):
+    name            = models.ForeignKey(User)
+    bio             = models.TextField()
+    academic_staff  = models.BooleanField()
+
+
+
+class Faculty(models.Model):
+    name        = models.CharField(max_length=10000)
+    Dean        = models.ForeignKey(Staff)
+
+
+class Department(models.Model):
+    name        = models.CharField()
+    staff       = models.ManyToManyField(Staff)
+    faculty     = models.ForeignKey(Faculty)
+    HOD         = models.ForeignKey(Staff)
+
+
+class Student_grouping(models.Models):
+    LEVEL_CHOICES = (
+        (100, 'Level 100'),
+        (200, 'Level 200'),
+        (300, 'Level 300'),
+        (400, 'Level 400'),
+        (500, 'Level 500'),
+        (600, 'Other Levels'),
+    )
+    department          = models.ForeignKey(Department, on_delete=models.CASCADE)
+    student_level       = models.IntegerField(choices=LEVEL_CHOICES)
+    course_advider      = models.ForeignKey(Department.staff)
+
+
+class Student(models.Model):
+    name                = models.ForeignKey(User, on_delete=models.CASCADE)
+    Registration_No     = models.PositiveBigIntegerField()
+    group               = models.ForeignKey(Student_grouping, on_delete=models.CASCADE)
+    bio                 = models.CharField(max_length=10000, blank=True)
+
+
+class Mail(models.Model):
+    title       = models.CharField(max_length=2000)
+    subject     = models.CharField(max_length=2000, blank=True)
+    destination      = models.ForeignKey(User, on_delete=models.CASCADE)
+    mail        = models.TextField()
+    sender      = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+
+class Mail_Tracker(models.Model):
+    tracking                = models.ForeignKey(Mail, on_delete=models.CASCADE)
+    currently_with          = models.ForeignKey(User, on_delete=models.CASCADE)
+    delivered               = models.BooleanField(default=False)
+    history_and_comments    = models.TextField()
+
