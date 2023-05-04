@@ -24,7 +24,7 @@ CREATE TABLE Faculty (
 
 CREATE TABLE Department (
     id              SERIAL PRIMARY KEY,
-    name            VARCHAR NOT NULL,
+    name            VARCHAR(10000) NOT NULL,
     faculty_id      INTEGER NOT NULL REFERENCES Faculty(id),
     HOD_id          INTEGER NOT NULL REFERENCES Staff(id)
 );
